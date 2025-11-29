@@ -12,100 +12,230 @@
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+  :root{
+    --bg:#0d0d0f;
+    --card:#121212;
+    --muted:#9aa0a6;
+    --accent:#00aaff;
+    --text:#e9eef5;
+    --glass: rgba(255,255,255,0.03);
+  }
 
-  <!-- Particles.js (CDN) -->
-  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none}
+  .container{max-width:1100px;margin:0 auto;padding:36px}
 
+  /* particles layer - FIXED: behind content + doesn't intercept clicks */
+  #particles-js{position:fixed;inset:0;z-index:-1;pointer-events:none;}
+
+  /* nav */
+  .nav{position:fixed;top:0;left:0;right:0;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.15));z-index:60;border-bottom:1px solid rgba(255,255,255,0.03)}
+  .nav .nav-left{display:flex;align-items:center;gap:12px}
+  .nav img#logo{height:40px;width:40px;border-radius:6px;object-fit:cover}
+  .brand{font-weight:700;color:var(--text);font-size:18px}
+  .nav .nav-right a{margin-left:18px;color:var(--muted);font-weight:600}
+  .nav .nav-right button{background:none;border:0;color:var(--muted);cursor:pointer;margin-left:12px}
+
+  /* hero */
+  .hero{min-height:420px;display:flex;align-items:center;justify-content:center;padding-top:70px;position:relative;z-index:2}
+  .hero-inner{text-align:center;max-width:900px;padding:48px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+  .hero h1{font-size:36px;margin:0}
+  .lead{color:var(--muted);margin-top:6px;font-size:18px}
+  .cta{margin-top:18px}
+  .btn{display:inline-block;padding:10px 18px;border-radius:8px;background:var(--accent);color:#00121a;font-weight:600;margin:6px;border:none;cursor:pointer}
+  .btn:disabled{opacity:0.6;cursor:not-allowed}
+  .btn-outline{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,0.06)}
+
+  /* skills */
+  .section-title{text-align:center;font-size:26px;margin-bottom:18px}
+  .skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+  .skill{background:var(--card);padding:14px;border-radius:10px;text-align:center;color:var(--muted)}
+
+  /* projects */
+  .projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+  .proj-card{background:var(--card);padding:18px;border-radius:10px;border-left:4px solid var(--accent)}
+  .proj-card h3{margin:0 0 8px}
+  .proj-card p{color:var(--muted);margin:0 0 12px}
+
+  /* stats */
+  .stats-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center}
+  .stats-row img{border-radius:8px;max-width:48%;box-shadow:0 6px 18px rgba(0,0,0,0.6)}
+
+  /* contact */
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .contact-card{background:var(--card);padding:18px;border-radius:10px;position:relative;z-index:2}
+  .contact-card h3{margin-top:0}
+  .contact-card form label{display:block;margin-top:12px}
+  .contact-card input, .contact-card textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)}
+  .muted{color:var(--muted);font-size:13px;margin-top:12px}
+
+  /* repo list */
+  .repo-card{background:var(--card);padding:16px;border-radius:8px;margin-bottom:12px;border-left:4px solid rgba(255,255,255,0.03)}
+
+  /* footer */
+  .footer{padding:32px;color:var(--muted);text-align:center;background:transparent;margin-top:30px}
+
+  /* responsive */
+  @media(max-width:820px){
+    .contact-grid{grid-template-columns:1fr}
+    .stats-row img{max-width:100%}
+    .nav .nav-right a{display:none}
+    .nav .nav-right button{display:inline-block}
+  }
+
+  /* Error text */
+  .error {
+    color: #ff4d4d;
+    font-size: 13px;
+    display: block;
+    margin-top: 6px;
+    min-height:18px;
+  }
+
+  /* Loader animation */
+  .loader {
+    display: none;
+    border: 3px solid #fff;
+    border-top: 3px solid transparent;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    margin-left: 10px;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+  }
+
+  @keyframes spin {
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Success popup */
+  .popup {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 9999;
+    opacity: 0; pointer-events: none;
+    transition: opacity .28s ease;
+  }
+
+  .popup-content {
+    background: #fff;
+    padding: 25px 40px;
+    border-radius: 12px;
+    text-align: center;
+    animation: popup-fade 0.4s ease forwards;
+    color: #111;
+    min-width: 260px;
+  }
+
+  @keyframes popup-fade {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .popup.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .hidden { display:none; }
+
+  /* small UI tweaks */
+  .hero .hero-inner .social { margin-top:14px; }
+  .hero .hero-inner .social a { margin:0 8px; color:var(--muted); font-size:18px; }
+  </style>
 </head>
 <body>
 
   <!-- Particles background -->
-  <div id="particles-js"></div>
+  <div id="particles-js" aria-hidden="true"></div>
 
   <!-- Top navigation -->
-  <nav class="nav">
+  <nav class="nav" role="navigation" aria-label="Main navigation">
     <div class="nav-left">
       <img id="logo" src="assets/images/logo.png" alt="logo" />
       <a class="brand" href="/">Abhijeet Raj</a>
     </div>
-    <div class="nav-right">
-      <a href="index.html">Home</a>
-      <a href="projects.html">Projects</a>
-      <a href="#contact">Contact</a>
-      <a id="resume-link" href="assets/images/resume.pdf" download>Download CV</a>
+    <div class="nav-right" role="menubar">
+      <a role="menuitem" href="index.html">Home</a>
+      <a role="menuitem" href="projects.html">Projects</a>
+      <a role="menuitem" href="#contact">Contact</a>
+      <a id="resume-link" role="menuitem" href="assets/images/resume.pdf" download>Download CV</a>
       <button id="theme-toggle" aria-label="Toggle theme"><i class="fa fa-moon"></i></button>
     </div>
   </nav>
 
   <!-- HERO -->
-  <header class="hero">
+  <header class="hero" role="banner">
     <div class="hero-inner">
       <h1>👋 Hi, I'm <span class="accent">Abhijeet Raj</span></h1>
       <p class="lead">Azure Data Engineer • Python Developer • ETL Specialist • Power BI</p>
-      <div class="cta">
+      <div class="cta" role="group" aria-label="primary call to actions">
         <a class="btn" href="projects.html">See Projects</a>
         <a class="btn btn-outline" href="assets/images/resume.pdf" download>Download Resume</a>
       </div>
 
-      <div class="social">
-        <a href="https://github.com/abhijeetraj22" target="_blank"><i class="fab fa-github"></i></a>
-        <a href="https://www.linkedin.com/in/rajabhijeet22" target="_blank"><i class="fab fa-linkedin"></i></a>
+      <div class="social" aria-hidden="false">
+        <a href="https://github.com/abhijeetraj22" target="_blank" rel="noopener"><i class="fab fa-github"></i></a>
+        <a href="https://www.linkedin.com/in/rajabhijeet22" target="_blank" rel="noopener"><i class="fab fa-linkedin"></i></a>
         <a href="mailto:abhijeetraj22@gmail.com"><i class="fa fa-envelope"></i></a>
       </div>
     </div>
   </header>
 
   <!-- Skills -->
-  <section class="section container">
-    <h2 class="section-title">🛠 Tech & Tools</h2>
-    <div class="grid skills-grid">
-      <div class="skill">Python</div>
-      <div class="skill">Azure Data Factory</div>
-      <div class="skill">Databricks / PySpark</div>
-      <div class="skill">Data Lake</div>
-      <div class="skill">SQL Server / pyodbc</div>
-      <div class="skill">Power BI</div>
-      <div class="skill">Tkinter (GUI)</div>
-      <div class="skill">PyPDF2 / PyMuPDF</div>
-      <div class="skill">CI/CD — GitHub Actions</div>
+  <section class="section container" aria-labelledby="skills-title">
+    <h2 id="skills-title" class="section-title">🛠 Tech & Tools</h2>
+    <div class="grid skills-grid" role="list">
+      <div class="skill" role="listitem">Python</div>
+      <div class="skill" role="listitem">Azure Data Factory</div>
+      <div class="skill" role="listitem">Databricks / PySpark</div>
+      <div class="skill" role="listitem">Data Lake</div>
+      <div class="skill" role="listitem">SQL Server / pyodbc</div>
+      <div class="skill" role="listitem">Power BI</div>
+      <div class="skill" role="listitem">Tkinter (GUI)</div>
+      <div class="skill" role="listitem">PyPDF2 / PyMuPDF</div>
+      <div class="skill" role="listitem">CI/CD — GitHub Actions</div>
     </div>
   </section>
 
   <!-- Featured projects -->
-  <section class="section container">
-    <h2 class="section-title">🚀 Featured Projects</h2>
+  <section class="section container" aria-labelledby="projects-title">
+    <h2 id="projects-title" class="section-title">🚀 Featured Projects</h2>
     <div class="projects-grid">
-      <!-- Featured project cards -->
       <article class="proj-card">
         <h3>OMK_CBSE_RESULT</h3>
         <p>CBSE TXT → Excel converter with Tkinter GUI, ranking & summary automation.</p>
-        <a class="link" href="https://github.com/abhijeetraj22/OMK_CBSE_RESULT" target="_blank">View repo ↗</a>
+        <a class="link" href="https://github.com/abhijeetraj22/OMK_CBSE_RESULT" target="_blank" rel="noopener">View repo ↗</a>
       </article>
 
       <article class="proj-card">
         <h3>OMK_ATTENDANCE_GUI</h3>
         <p>Attendance processor with ID normalization, grace-time logic & export.</p>
-        <a class="link" href="https://github.com/abhijeetraj22/OMK_ATTENDANCE_GUI" target="_blank">View repo ↗</a>
+        <a class="link" href="https://github.com/abhijeetraj22/OMK_ATTENDANCE_GUI" target="_blank" rel="noopener">View repo ↗</a>
       </article>
 
       <article class="proj-card">
         <h3>PDF Processing Automation</h3>
         <p>Enterprise voucher/PDF pipeline: merging, SQL tracking, email alerts.</p>
-        <a class="link" href="https://github.com/abhijeetraj22/PDF-Processing-Automation-Ballard-Spahr-" target="_blank">View repo ↗</a>
+        <a class="link" href="https://github.com/abhijeetraj22/PDF-Processing-Automation-Ballard-Spahr-" target="_blank" rel="noopener">View repo ↗</a>
       </article>
 
       <article class="proj-card">
         <h3>ADF + Databricks + Synapse</h3>
         <p>End-to-end ELT pipeline, medallion architecture (bronze→silver→gold).</p>
-        <a class="link" href="https://github.com/abhijeetraj22/Azure-Data-Pipeline-with-ADF-Databricks-Synapse" target="_blank">View repo ↗</a>
+        <a class="link" href="https://github.com/abhijeetraj22/Azure-Data-Pipeline-with-ADF-Databricks-Synapse" target="_blank" rel="noopener">View repo ↗</a>
       </article>
 
       <article class="proj-card">
         <h3>Excel → SQL Automation</h3>
         <p>CSV/Excel ingestion with auto schema, cleaning & bulk insert.</p>
-        <a class="link" href="https://github.com/abhijeetraj22/Excel-CSV-to-SQL-Import-Automation" target="_blank">View repo ↗</a>
+        <a class="link" href="https://github.com/abhijeetraj22/Excel-CSV-to-SQL-Import-Automation" target="_blank" rel="noopener">View repo ↗</a>
       </article>
     </div>
   </section>
@@ -114,49 +244,48 @@
   <section class="section container">
     <h2 class="section-title">📈 GitHub Snapshot</h2>
     <div class="stats-row">
-      <!-- readme-stats images -->
       <img src="https://github-readme-stats.vercel.app/api?username=abhijeetraj22&show_icons=true&theme=dark" alt="github-stats" loading="lazy">
       <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=abhijeetraj22&layout=compact&theme=dark" alt="top-langs" loading="lazy">
     </div>
   </section>
 
   <!-- Contact -->
-  <section id="contact" class="section container">
-    <h2 class="section-title">📬 Contact</h2>
+  <section id="contact" class="section container" aria-labelledby="contact-title">
+    <h2 id="contact-title" class="section-title">📬 Contact</h2>
 
     <div class="contact-grid">
-      <div class="contact-card">
+      <div class="contact-card" aria-hidden="false">
         <h3>Let's talk</h3>
         <p>If you want to hire or collaborate — reach out!</p>
         <p><strong>Email</strong>: <a href="mailto:abhijeetraj22@gmail.com">abhijeetraj22@gmail.com</a></p>
-        <p><strong>LinkedIn</strong>: <a href="https://www.linkedin.com/in/rajabhijeet22" target="_blank">rajabhijeet22</a></p>
+        <p><strong>LinkedIn</strong>: <a href="https://www.linkedin.com/in/rajabhijeet22" target="_blank" rel="noopener">rajabhijeet22</a></p>
         <a class="btn" href="assets/images/resume.pdf" download>Download Resume</a>
       </div>
 
-      <div class="contact-card">
+      <div class="contact-card" aria-hidden="false">
         <h3>Message me</h3>
 
-        <!-- Contact form: uses Formspree. Replace action with your form endpoint -->
+        <!-- Contact form: Formspree endpoint already present -->
         <form id="contact-form" action="https://formspree.io/f/xgvjjoza" method="POST" novalidate>
         
           <label>
-            <input type="text" id="name" name="name" placeholder="Your name" required>
-            <span class="error" id="name-error"></span>
+            <input type="text" id="name" name="name" placeholder="Your name" required aria-required="true" />
+            <span class="error" id="name-error" aria-live="polite"></span>
           </label>
         
           <label>
-            <input type="email" id="email" name="email" placeholder="Your email" required>
-            <span class="error" id="email-error"></span>
+            <input type="email" id="email" name="email" placeholder="Your email" required aria-required="true" />
+            <span class="error" id="email-error" aria-live="polite"></span>
           </label>
         
           <label>
-            <textarea id="message" name="message" placeholder="Your message" rows="5" required></textarea>
-            <span class="error" id="message-error"></span>
+            <textarea id="message" name="message" placeholder="Your message" rows="5" required aria-required="true"></textarea>
+            <span class="error" id="message-error" aria-live="polite"></span>
           </label>
         
-          <button id="send-btn" class="btn" type="submit">
+          <button id="send-btn" class="btn" type="submit" aria-label="Send message">
             <span class="btn-text">Send message</span>
-            <span class="loader"></span>
+            <span class="loader" id="btn-loader" role="status" aria-hidden="true"></span>
           </button>
         
           <p class="muted">Or email me directly at 
@@ -165,7 +294,7 @@
         </form>
         
         <!-- SUCCESS POPUP -->
-        <div id="success-popup" class="popup hidden">
+        <div id="success-popup" class="popup hidden" role="dialog" aria-modal="true" aria-hidden="true">
           <div class="popup-content">
             <h3>Message Sent 🎉</h3>
             <p>Thank you! I’ll get back to you soon.</p>
@@ -177,88 +306,176 @@
     </div>
   </section>
 
-  <footer class="footer">
+  <footer class="footer" role="contentinfo">
     <p>© <span id="year"></span> Abhijeet Raj — Built with ❤️ • Hosted on GitHub Pages</p>
   </footer>
 
-  <script src="assets/js/particles-config.js"></script>
-  <script src="assets/js/main.js"></script>
+  <!-- particles.js (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js" defer></script>
 
   <script>
-document.getElementById("contact-form").addEventListener("submit", async function (e) {
-  e.preventDefault();
+  /******************************************************************
+   * Main JS - theme toggle, form handling, particles init, small fixes
+   ******************************************************************/
+  document.addEventListener('DOMContentLoaded', function () {
 
-  let valid = true;
+    // ---------- THEME TOGGLE ----------
+    const themeToggle = document.getElementById('theme-toggle');
+    const root = document.documentElement;
+    const saved = localStorage.getItem('theme') || 'dark';
 
-  // Input values
-  const name = document.getElementById("name");
-  const email = document.getElementById("email");
-  const message = document.getElementById("message");
+    function applyTheme(theme) {
+      if (theme === 'light') {
+        root.style.setProperty('--bg', '#f7f9fb');
+        root.style.setProperty('--card', '#ffffff');
+        root.style.setProperty('--text', '#0d1220');
+        root.style.setProperty('--muted', '#52606d');
+        root.style.setProperty('--accent', '#0066cc');
+        document.body.classList.add('light');
+      } else {
+        root.style.setProperty('--bg', '#0d0d0f');
+        root.style.setProperty('--card', '#121212');
+        root.style.setProperty('--text', '#e9eef5');
+        root.style.setProperty('--muted', '#9aa0a6');
+        root.style.setProperty('--accent', '#00aaff');
+        document.body.classList.remove('light');
+      }
+      localStorage.setItem('theme', theme);
+    }
+    applyTheme(saved);
 
-  // Error labels
-  const nameErr = document.getElementById("name-error");
-  const emailErr = document.getElementById("email-error");
-  const msgErr = document.getElementById("message-error");
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        const current = localStorage.getItem('theme') === 'light' ? 'light' : 'dark';
+        const next = current === 'light' ? 'dark' : 'light';
+        applyTheme(next);
+      });
+    }
 
-  // Reset errors
-  nameErr.textContent = "";
-  emailErr.textContent = "";
-  msgErr.textContent = "";
+    // ---------- FOOTER YEAR ----------
+    const yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  // Validation
-  if (name.value.trim() === "") {
-    nameErr.textContent = "Name is required.";
-    valid = false;
-  }
+    // ---------- PARTICLES INIT ----------
+    if (window.particlesJS) {
+      particlesJS('particles-js', {
+        "particles": {
+          "number": { "value": 55, "density": { "enable": true, "value_area": 800 } },
+          "color": { "value": "#00aaff" },
+          "shape": { "type": "circle" },
+          "opacity": { "value": 0.12 },
+          "size": { "value": 3, "random": true },
+          "line_linked": { "enable": true, "distance": 140, "color": "#00aaff", "opacity": 0.06, "width": 1 },
+          "move": { "enable": true, "speed": 1.5, "direction": "none", "out_mode": "bounce" }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" } },
+          "modes": { "grab": { "distance": 180, "line_linked": { "opacity": 0.18 } }, "push": { "particles_nb": 4 } }
+        },
+        "retina_detect": true
+      });
+    } else {
+      // If particles library fails to load, don't block UI
+      console.warn('particles.js not loaded — continuing without background animation.');
+    }
 
-  const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
-  if (!email.value.match(emailPattern)) {
-    emailErr.textContent = "Enter a valid email.";
-    valid = false;
-  }
+    // ---------- CONTACT FORM ----------
+    const contactForm = document.getElementById('contact-form');
+    const successPopup = document.getElementById('success-popup');
+    const closePopupBtn = document.getElementById('close-popup');
+    const sendBtn = document.getElementById('send-btn');
+    const loader = document.getElementById('btn-loader');
+    const btnText = sendBtn ? sendBtn.querySelector('.btn-text') : null;
 
-  if (message.value.trim() === "") {
-    msgErr.textContent = "Message cannot be empty.";
-    valid = false;
-  }
+    if (contactForm) {
+      contactForm.addEventListener('submit', async function (ev) {
+        ev.preventDefault();
 
-  if (!valid) return;
+        // reset errors
+        const nameErr = document.getElementById('name-error');
+        const emailErr = document.getElementById('email-error');
+        const msgErr = document.getElementById('message-error');
+        nameErr.textContent = '';
+        emailErr.textContent = '';
+        msgErr.textContent = '';
 
-  // Show loading animation
-  const sendBtn = document.getElementById("send-btn");
-  const loader = sendBtn.querySelector(".loader");
-  const btnText = sendBtn.querySelector(".btn-text");
+        // values
+        const name = (document.getElementById('name') || {}).value || '';
+        const email = (document.getElementById('email') || {}).value || '';
+        const message = (document.getElementById('message') || {}).value || '';
 
-  btnText.style.display = "none";
-  loader.style.display = "inline-block";
+        // validation
+        let valid = true;
+        if (name.trim() === '') { nameErr.textContent = 'Name is required.'; valid = false; }
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+        if (!email.match(emailPattern)) { emailErr.textContent = 'Enter a valid email.'; valid = false; }
+        if (message.trim() === '') { msgErr.textContent = 'Message cannot be empty.'; valid = false; }
 
-  // Submit form (Formspree backend email)
-  const response = await fetch(e.target.action, {
-    method: "POST",
-    body: new FormData(e.target),
-    headers: { "Accept": "application/json" }
-  });
+        if (!valid) {
+          return;
+        }
 
-  btnText.style.display = "inline";
-  loader.style.display = "none";
+        // UI: loader
+        if (btnText) btnText.style.display = 'none';
+        if (loader) loader.style.display = 'inline-block';
+        if (sendBtn) sendBtn.disabled = true;
 
-  if (response.ok) {
-    e.target.reset();
-    document.getElementById("success-popup").classList.add("show");
-  } else {
-    alert("Something went wrong! Please try again.");
-  }
-});
+        try {
+          // AJAX submit to Formspree so we can show popup without navigation
+          const response = await fetch(contactForm.action, {
+            method: 'POST',
+            body: new FormData(contactForm),
+            headers: { 'Accept': 'application/json' },
+          });
 
-// Close popup
-document.getElementById("close-popup").addEventListener("click", () => {
-  document.getElementById("success-popup").classList.remove("show");
-});
-</script>
+          // hide loader
+          if (btnText) btnText.style.display = 'inline';
+          if (loader) loader.style.display = 'none';
+          if (sendBtn) sendBtn.disabled = false;
 
+          if (response.ok) {
+            contactForm.reset();
+            // show popup (accessible)
+            successPopup.classList.add('show');
+            successPopup.setAttribute('aria-hidden', 'false');
+            // focus close button for keyboard users
+            if (closePopupBtn) closePopupBtn.focus();
+          } else {
+            // parse error if possible
+            let errText = 'Something went wrong. Please try again.';
+            try {
+              const data = await response.json();
+              if (data && data.error) errText = data.error;
+            } catch (e) { /* ignore */ }
+            alert(errText);
+          }
+        } catch (err) {
+          console.error('Network error sending contact form', err);
+          alert('Network error. Please try again.');
+          if (btnText) btnText.style.display = 'inline';
+          if (loader) loader.style.display = 'none';
+          if (sendBtn) sendBtn.disabled = false;
+        }
+      });
+    }
+
+    if (closePopupBtn) {
+      closePopupBtn.addEventListener('click', function () {
+        successPopup.classList.remove('show');
+        successPopup.setAttribute('aria-hidden', 'true');
+      });
+    }
+
+    // close popup when pressing Escape
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && successPopup.classList.contains('show')) {
+        successPopup.classList.remove('show');
+        successPopup.setAttribute('aria-hidden', 'true');
+      }
+    });
+
+  }); // end DOMContentLoaded
+  </script>
 </body>
 </html>
-
-
-
-
